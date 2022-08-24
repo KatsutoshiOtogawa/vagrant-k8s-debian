@@ -1,5 +1,7 @@
 NUM_WORKER_NODES=1
 IP_NW="10.0.0."
+NETMASK="8"
+NETWORK_VISIBLITY="public_network"
 IP_START=10
 
 Vagrant.configure("2") do |config|
@@ -15,7 +17,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "master" do |master|
     master.vm.hostname = "master-node"
-    master.vm.network "private_network", ip: IP_NW + "#{IP_START}"
+    master.vm.network NETWORK_VISIBLITY, ip: IP_NW + "#{IP_START}", netmask: NETMASK
     master.vm.provider "virtualbox" do |vb|
         vb.memory = 4048
         vb.cpus = 2
@@ -40,7 +42,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "node0#{i}" do |node|
     node.vm.hostname = "worker-node0#{i}"
-    node.vm.network "private_network", ip: IP_NW + "#{IP_START + i}"
+    node.vm.network NETWORK_VISIBLITY, ip: IP_NW + "#{IP_START + i}", netmask: NETMASK
     node.vm.provider "virtualbox" do |vb|
         vb.memory = 2048
         vb.cpus = 1
@@ -51,7 +53,11 @@ Vagrant.configure("2") do |config|
       vm.memory = 2048
       vm.cpus = 1
     end
-    node.vm.provision "shell", path: "scripts/common.sh", env: {"KUBERNETES_VERSION" => "1.23.4-00"}
+    node.vm.provision "shell", path: "scripts/common.sh", env: {
+      "OS" => "Debian_11",
+      "CRIO_VERSION" => "1.23",
+      "KUBERNETES_VERSION" => "1.23.4-00"
+    }
     node.vm.provision "shell", path: "scripts/node.sh"
   end
 
