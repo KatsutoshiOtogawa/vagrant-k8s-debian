@@ -30,11 +30,17 @@ Vagrant.configure("2") do |config|
     end
     # 
     master.vm.provision "shell", path: "scripts/common.sh", env: {
+      "TZ" => "Asia/Tokyo",
+      "IP_NW" => IP_NW,
       "OS" => "Debian_11",
       "CRIO_VERSION" => "1.23",
       "KUBERNETES_VERSION" => "1.23.4-00"
     }
-    master.vm.provision "shell", path: "scripts/master.sh", env: {"KUBERNETES_VERSION" => "1.23.4-00"}
+    master.vm.provision "shell", path: "scripts/master.sh", env: {
+      "MASTER_IP" => "10.0.0.10",
+      "POD_CIDR" => "192.168.0.0/16",
+      "KUBERNETES_VERSION" => "1.23.4-00"
+    }
     master.vm.provision "shell", path: "scripts/util.sh"
   end
 
@@ -54,6 +60,8 @@ Vagrant.configure("2") do |config|
       vm.cpus = 1
     end
     node.vm.provision "shell", path: "scripts/common.sh", env: {
+      "TZ" => "Asia/Tokyo",
+      "IP_NW" => IP_NW,
       "OS" => "Debian_11",
       "CRIO_VERSION" => "1.23",
       "KUBERNETES_VERSION" => "1.23.4-00"

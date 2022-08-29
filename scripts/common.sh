@@ -6,12 +6,7 @@ set -euxo pipefail
 
 apt update && apt upgrade -y
 
-# Variable Declaration
-
-# KUBERNETES_VERSION="1.24.3-00"
-
-# kubernetes is neeed to swap off
-# disable swap
+timedatectl set-timezone $TZ
 
 # 即時にswapoff, kubernetes installのため、
 swapoff -a
